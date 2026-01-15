@@ -1,4 +1,4 @@
-package com.skyapp.newsapp.ui.news_feed.viewmodel
+package com.skyapp.newsapp.ui.screens.news_Article.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class NewsFeedViewModel  @Inject constructor(
+class NewsArticleViewModel  @Inject constructor(
     private val repository: NewsFeedRepository
 )    : ViewModel() {
 
