@@ -10,13 +10,15 @@ class NewsFeedRepositoryImpl @Inject   constructor(
     private val api : NewsFeedApiService
 ) : NewsFeedRepository{
 
-    override suspend fun getAllNewsArticles(): List<Article> {
-        val response = api.getAllNewsArticles()
+    override suspend fun getAllNewsArticles(
+        limit: Int,offset: Int
+    ): List<Article> {
+        val response = api.getAllNewsArticles(limit,offset)
         if(!response.isSuccessful)
               throw Exception("Get All news Articles Failed, ${response.code()}")
 
         val body = response.body() ?: throw Exception("Empty Response")
 
-        return  body.map { it.toDomain() }
+        return   body.results.map { it.toDomain() }
     }
 }

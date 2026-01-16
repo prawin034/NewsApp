@@ -1,13 +1,19 @@
 package com.skyapp.newsapp.data.remote
 
-import com.skyapp.newsapp.data.remote.dto.article.NewsArticleItemDto
-
+import com.skyapp.newsapp.data.remote.dto.article.NewsArticleResponseDto
+import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface NewsFeedApiService {
 
 
 
-    @GET("/v4/articles/")
-    suspend fun getAllNewsArticles() : retrofit2.Response<List<NewsArticleItemDto>>
+    @GET("v4/articles/")
+    suspend fun getAllNewsArticles(
+           @Query("limit") limit: Int,
+           @Query("offset") offset: Int,
+    ) : Response<NewsArticleResponseDto>
+
+
 }

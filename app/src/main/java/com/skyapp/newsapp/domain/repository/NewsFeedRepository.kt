@@ -6,7 +6,7 @@ import com.skyapp.newsapp.domain.model.Article
 
 interface NewsFeedRepository  {
 
-    suspend fun getAllNewsArticles() : List<Article>
+    suspend fun getAllNewsArticles(limit: Int,offset: Int) : List<Article>
 }
 
 

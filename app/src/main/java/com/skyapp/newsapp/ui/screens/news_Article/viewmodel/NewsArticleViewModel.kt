@@ -24,14 +24,17 @@ class NewsArticleViewModel  @Inject constructor(
 
 
 
-    fun getAllNewsArticles() {
+    fun getAllNewsArticles(
+        limit : Int = 20,
+        offset: Int = 0,
+    ) {
         viewModelScope.launch {
             _newsUiState.value = NewsFeedUiState(
                 isLoading = true,
                 error = null
             )
             try {
-                val result =  repository.getAllNewsArticles()
+                val result =  repository.getAllNewsArticles(limit,offset)
 
                 _newsUiState.value = NewsFeedUiState(
                     isLoading = false,
