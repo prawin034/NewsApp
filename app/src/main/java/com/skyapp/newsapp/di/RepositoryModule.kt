@@ -1,6 +1,8 @@
 package com.skyapp.newsapp.di
 
+import com.skyapp.newsapp.data.repository.NewsDetailRepositoryImpl
 import com.skyapp.newsapp.data.repository.NewsFeedRepositoryImpl
+import com.skyapp.newsapp.domain.repository.NewsDetailRepository
 import com.skyapp.newsapp.domain.repository.NewsFeedRepository
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,12 @@ abstract class  RepositoryModule {
     abstract fun bindNewsFeedRepository(
         newsFeedRepositoryImpl: NewsFeedRepositoryImpl
     ) : NewsFeedRepository
+
+
+
+    @Binds
+    abstract fun bindNewsDetailRepository(
+        newsDetailedImpl : NewsDetailRepositoryImpl
+    ) : NewsDetailRepository
+
 }

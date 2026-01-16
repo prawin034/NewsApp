@@ -10,9 +10,7 @@ import retrofit2.http.Path
 interface NewsDetailApiService {
 
 
-    //Get Particular article
-    @GET("/v4/articles/{id}")
+    // Get Article by id
+    @GET("v4/articles/{id}")
     suspend fun getArticle(@Path("id") id : Int) : Response<NewsArticleItemDto>
-
-
 }

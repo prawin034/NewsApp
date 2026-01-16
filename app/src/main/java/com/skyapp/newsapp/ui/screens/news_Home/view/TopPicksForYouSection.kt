@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.skyapp.newsapp.domain.model.Article
 import com.skyapp.newsapp.ui.common.AppAsyncImg
 import com.skyapp.newsapp.ui.common.AppCard
@@ -38,13 +40,17 @@ import com.skyapp.newsapp.ui.common.AppSectionTextHeader
 import com.skyapp.newsapp.ui.common.AppTextBody1
 import com.skyapp.newsapp.ui.common.AppTextBody2
 import com.skyapp.newsapp.ui.common.AppTxtShowMore
+import com.skyapp.newsapp.ui.navigation.NewsScreens
 import com.skyapp.newsapp.ui.screens.news_Article.viewmodel.NewsFeedUiState
 import com.skyapp.newsapp.ui.utils.parseValidDateString
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewsHomeTopPickupForYouSection(getAllArticles: NewsFeedUiState)
+fun NewsHomeTopPickupForYouSection(
+    getAllArticles: NewsFeedUiState,
+    navController: NavController
+)
 {
     val context = LocalContext.current
 
@@ -86,7 +92,9 @@ fun NewsHomeTopPickupForYouSection(getAllArticles: NewsFeedUiState)
 //            }
 //        }
 
-        LoadTopPickupForYouSection(getAllArticles.article)
+        LoadTopPickupForYouSection(getAllArticles.article) {
+            navController.navigate(NewsScreens.NewsDetailScreen.passArgs(it))
+        }
 
 
 
@@ -98,7 +106,10 @@ fun NewsHomeTopPickupForYouSection(getAllArticles: NewsFeedUiState)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun LoadTopPickupForYouSection(article: List<Article>) {
+fun LoadTopPickupForYouSection(
+    article: List<Article>,
+    onClick: (Int) -> Unit = {}
+) {
 
 
     LazyRow(
@@ -114,6 +125,9 @@ fun LoadTopPickupForYouSection(article: List<Article>) {
                 modifier = Modifier
                     .fillParentMaxWidth(0.8f)
                     .height(430.dp)
+                    .clickable {
+                      onClick.invoke(item.id)
+                    }
                     .border(
                         width = 1.dp,
                         color = Color.White,

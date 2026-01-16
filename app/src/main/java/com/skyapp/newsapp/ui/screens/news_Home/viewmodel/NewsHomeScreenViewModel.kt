@@ -22,7 +22,6 @@ class NewsHomeScreenViewModel  @Inject constructor(
 
 
 
-
     fun getAllNewsArticles(
         limit: Int = 20, offset: Int = 0
     ) {

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.skyapp.newsapp.ui.common.AppAsyncImg
 import com.skyapp.newsapp.ui.common.AppCmnRow
@@ -39,7 +40,9 @@ import com.skyapp.newsapp.ui.screens.news_Article.viewmodel.NewsFeedUiState
 import java.util.Locale
 
 @Composable
-fun ExploreNewsSection(getAllArticles: NewsFeedUiState) {
+fun ExploreNewsSection(
+    getAllArticles: NewsFeedUiState
+) {
 
 
 

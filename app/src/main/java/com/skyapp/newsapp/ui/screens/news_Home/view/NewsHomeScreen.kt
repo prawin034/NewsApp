@@ -2,6 +2,7 @@ package com.skyapp.newsapp.ui.screens.news_Home.view
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,12 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +65,10 @@ fun NewsHomeScreen(
         )
 
     }
+
+
+    val lazyListState  = rememberLazyListState()
+
 
 
     AppScaffold(
@@ -115,11 +122,11 @@ fun NewsHomeScreen(
                horizontalAlignment = Alignment.Start,
                verticalArrangement = Arrangement.SpaceBetween
            ) {
-
-
-               LazyColumn {
+               LazyColumn(
+                   state = lazyListState
+               ) {
                    item {
-                       NewsHomeTopPickupForYouSection(getAllArticles)
+                       NewsHomeTopPickupForYouSection(getAllArticles,navController)
                    }
 
                    item {
@@ -137,6 +144,21 @@ fun NewsHomeScreen(
                    }
 
 
+               }
+               LaunchedEffect(lazyListState) {
+                  snapshotFlow { lazyListState.layoutInfo }
+                      .collect {layoutInfo ->
+                          val totalItemsCount = layoutInfo.totalItemsCount
+
+                          val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?:0
+                          if (lastVisibleItem >= totalItemsCount - 3) {
+//                              newsHomeScreenViewModel.getAllNewsArticles(
+//                                 limit = 20,
+//                                  offset =
+//                              )
+                              //Toast.makeText(context,"reached end refreshing ",Toast.LENGTH_SHORT).show()
+                          }
+                      }
                }
 
 
