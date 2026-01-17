@@ -11,9 +11,9 @@ class NewsFeedRepositoryImpl @Inject   constructor(
 ) : NewsFeedRepository{
 
     override suspend fun getAllNewsArticles(
-        limit: Int,offset: Int
+        limit: Int,offset: Int,search: String?,
     ): List<Article> {
-        val response = api.getAllNewsArticles(limit,offset)
+        val response = api.getAllNewsArticles(limit,offset,search)
         if(!response.isSuccessful)
               throw Exception("Get All news Articles Failed, ${response.code()}")
 

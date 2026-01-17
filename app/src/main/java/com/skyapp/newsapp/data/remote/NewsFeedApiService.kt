@@ -13,7 +13,10 @@ interface NewsFeedApiService {
     suspend fun getAllNewsArticles(
            @Query("limit") limit: Int,
            @Query("offset") offset: Int,
+           @Query("title_contains") title: String? = null,
     ) : Response<NewsArticleResponseDto>
+
+
 
 
 }

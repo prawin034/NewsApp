@@ -1,23 +1,31 @@
 package com.skyapp.newsapp.ui.screens.news_Home.view
 
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,14 +38,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.skyapp.newsapp.ui.common.AppBottomBar
+import com.skyapp.newsapp.ui.common.AppBtn
 import com.skyapp.newsapp.ui.common.AppCmnRow
 import com.skyapp.newsapp.ui.common.AppLabelHeader
 import com.skyapp.newsapp.ui.common.AppScaffold
 import com.skyapp.newsapp.ui.common.AppSectionTextHeader
 import com.skyapp.newsapp.ui.common.AppTopAppBar
+import com.skyapp.newsapp.ui.common.ThemeToggleButton
+import com.skyapp.newsapp.ui.navigation.NewsScreens
 import com.skyapp.newsapp.ui.screens.news_Home.viewmodel.NewsHomeScreenViewModel
+import com.skyapp.newsapp.ui.utils.mapIconName
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsHomeScreen(
@@ -45,15 +58,18 @@ fun NewsHomeScreen(
     newsHomeScreenViewModel: NewsHomeScreenViewModel = hiltViewModel()
 ) {
 
-    LaunchedEffect(Unit) {
-        Log.d("called","network call")
-        newsHomeScreenViewModel.getAllNewsArticles()
-    }
+
     val context = LocalContext.current
 
     val getAllArticles by newsHomeScreenViewModel.newsUiState.collectAsStateWithLifecycle()
 
-
+    val getNewsArticlesPaginated by newsHomeScreenViewModel.getNewsArticlesPaginated.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        Log.d("called","network call")
+        if(getAllArticles.article.isEmpty()) {
+           newsHomeScreenViewModel.getAllNewsArticles()
+        }
+    }
 
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = true
@@ -70,6 +86,9 @@ fun NewsHomeScreen(
     val lazyListState  = rememberLazyListState()
 
 
+    val bottomList = listOf("Home","Search","BookMark","Profile")
+
+    val isDark  = remember { mutableStateOf(false) }
 
     AppScaffold(
         topAppBar = {
@@ -96,18 +115,41 @@ fun NewsHomeScreen(
                 },
                 title = {},
                 actions = {
-//                    AppNotificationBtn {
-//                    }
-//
-//                    MoreBtn(
-//                        icon = Icons.Default.MoreVert,
-//                        color = Color.White
-//                    ) { }
+                    ThemeToggleButton(
+                        modifier = Modifier,
+                        isDarkMode = isDark.value,
+                        onToggle = {
+                            isDark.value = !isDark.value
+                        }
+                    )
 
+                    AppBtn(
+                        icon = Icons.Default.MoreVert,
+                        color = Color.Black
+                    ) {
+
+                    }
                 }
             )
         },
-        bottomAppBar = {},
+        bottomAppBar = {
+            if(getNewsArticlesPaginated.isLoading) {
+                AppCmnRow(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Refreshing!", color = Color.Black, fontSize = 16.sp, modifier = Modifier.padding(2.dp))
+                    CircularProgressIndicator(
+                        color = Color.Green,
+                        strokeWidth = 5.dp
+                    )
+                }
+            }
+            if(getNewsArticlesPaginated.error !=null){
+                Toast.makeText(context,getNewsArticlesPaginated.error, Toast.LENGTH_SHORT).show()
+            }
+        },
         floatingBtn = {
 
         },
@@ -130,39 +172,37 @@ fun NewsHomeScreen(
                    }
 
                    item {
-                       ExploreNewsSection(getAllArticles)
+                       ExploreNewsSection(getAllArticles) {
+                           navController.navigate(NewsScreens.NewsArticleScreen.route)
+                       }
                    }
 
 
                    itemsIndexed(
-                       getAllArticles.article,
+                       getNewsArticlesPaginated.article,
                        key ={_, item -> item.id}
                    ) {index, item ->
 
-                       NewsFeed(item)
+                       NewsFeed(item){
+                           navController.navigate(NewsScreens.NewsDetailScreen.passArgs(it))
+                       }
 
                    }
 
-
                }
+
+
                LaunchedEffect(lazyListState) {
                   snapshotFlow { lazyListState.layoutInfo }
                       .collect {layoutInfo ->
                           val totalItemsCount = layoutInfo.totalItemsCount
 
                           val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?:0
-                          if (lastVisibleItem >= totalItemsCount - 3) {
-//                              newsHomeScreenViewModel.getAllNewsArticles(
-//                                 limit = 20,
-//                                  offset =
-//                              )
-                              //Toast.makeText(context,"reached end refreshing ",Toast.LENGTH_SHORT).show()
+                          if (lastVisibleItem >= totalItemsCount - 1) {
+                              newsHomeScreenViewModel.getNewsArticlesPaginated()
                           }
                       }
                }
-
-
-
 
            }
 

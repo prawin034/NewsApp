@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.skyapp.newsapp.domain.model.Article
 import com.skyapp.newsapp.ui.common.AppAsyncImg
+import com.skyapp.newsapp.ui.common.AppBtn
 import com.skyapp.newsapp.ui.common.AppCard
 import com.skyapp.newsapp.ui.common.AppCardHeader
 import com.skyapp.newsapp.ui.common.AppCardLabel
@@ -40,12 +43,12 @@ import com.skyapp.newsapp.ui.common.AppSectionTextHeader
 import com.skyapp.newsapp.ui.common.AppTextBody1
 import com.skyapp.newsapp.ui.common.AppTextBody2
 import com.skyapp.newsapp.ui.common.AppTxtShowMore
+import com.skyapp.newsapp.ui.common.shimmerEffect
 import com.skyapp.newsapp.ui.navigation.NewsScreens
 import com.skyapp.newsapp.ui.screens.news_Article.viewmodel.NewsFeedUiState
 import com.skyapp.newsapp.ui.utils.parseValidDateString
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsHomeTopPickupForYouSection(
     getAllArticles: NewsFeedUiState,
@@ -79,22 +82,35 @@ fun NewsHomeTopPickupForYouSection(
             modifier = Modifier.height(10.dp)
         )
 
-//        when {
-//            getAllArticles.isLoading -> {
-//                CircularProgressIndicator()
-//            }
-//            getAllArticles.error != null -> {
-//                Toast.makeText(context, getAllArticles.error,Toast.LENGTH_SHORT).show()
-//                Log.d("WhatEror","${getAllArticles.error}")
-//            }
-//            else -> {
-//
-//            }
-//        }
-
-        LoadTopPickupForYouSection(getAllArticles.article) {
-            navController.navigate(NewsScreens.NewsDetailScreen.passArgs(it))
+        when {
+            getAllArticles.isLoading -> {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(20) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .fillParentMaxWidth(0.8f)
+                                .height(430.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(18.dp)
+                                ).shimmerEffect(shape = RoundedCornerShape(18.dp)),
+                        )
+                    }
+                }
+            }
+            getAllArticles.article.isNotEmpty() -> {
+                LoadTopPickupForYouSection(getAllArticles.article) {
+                    navController.navigate(NewsScreens.NewsDetailScreen.passArgs(it))
+                }
+            }
         }
+
+
 
 
 
@@ -104,7 +120,7 @@ fun NewsHomeTopPickupForYouSection(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun LoadTopPickupForYouSection(
     article: List<Article>,
@@ -118,16 +134,17 @@ fun LoadTopPickupForYouSection(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         itemsIndexed(article) { index, item ->
-            val formattedDate = remember(item.publishedAt) {
-                parseValidDateString(item.publishedAt)
-            }
+//            val formattedDate = remember(item.publishedAt) {
+//                parseValidDateString(item.publishedAt)
+//            }
             AppCard(
                 modifier = Modifier
+                    .clickable {
+                        onClick.invoke(item.id)
+                    }
                     .fillParentMaxWidth(0.8f)
                     .height(430.dp)
-                    .clickable {
-                      onClick.invoke(item.id)
-                    }
+
                     .border(
                         width = 1.dp,
                         color = Color.White,
@@ -144,15 +161,20 @@ fun LoadTopPickupForYouSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .clickable{
+                                onClick.invoke(item.id)
+                            }.weight(1f),
                         contentAlignment = Alignment.TopEnd
                     ){
                         AppAsyncImg(
                             imageUrl = item.imageUrl,
                             modifier = Modifier
                                 .padding(top = 3.dp)
+
                                 .fillMaxWidth()
                                 .height(300.dp)
+
                                 .background(
                                     color = Color.Transparent,
                                     shape = RoundedCornerShape(
@@ -205,7 +227,7 @@ fun LoadTopPickupForYouSection(
 
 
                             AppTextBody1(
-                                formattedDate,
+                                item.publishedAt,
                                 color = Color.LightGray,
                                 fontSize = 10.sp,
                             )
@@ -216,7 +238,11 @@ fun LoadTopPickupForYouSection(
                         BottomTxtContent(
                             title = item.title,
                             summary = item.summary,
-                            imageUrl = item.imageUrl
+                            imageUrl = item.imageUrl,
+                            id = item.id,
+                            onClick = {
+                                onClick.invoke(it)
+                            }
                         )
 
 
@@ -241,9 +267,11 @@ fun LoadTopPickupForYouSection(
 
 @Composable
 fun BottomTxtContent(
+    id: Int,
     title: String,
     summary: String,
     imageUrl : String,
+    onClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -277,5 +305,12 @@ fun BottomTxtContent(
             color = Color.Black,
             fontSize = 10.sp,
         )
+
+        AppBtn(
+            icon = Icons.Default.AdsClick,
+            color = Color.Black
+        ) {
+            onClick.invoke(id)
+        }
     }
 }

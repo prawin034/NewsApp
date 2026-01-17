@@ -72,7 +72,6 @@ import androidx.compose.runtime.mutableStateOf
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsDetailedScreen(navController: NavController, id: Int, newsDetailedViewModel: NewsDetailedViewModel = hiltViewModel()) {
 
