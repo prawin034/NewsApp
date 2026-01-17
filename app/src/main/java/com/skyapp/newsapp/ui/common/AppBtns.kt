@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -57,7 +58,9 @@ fun BackIconButton(
 
 
 @Composable
-fun AppNotificationBtn(
+fun AppBtn(
+    icon: ImageVector = Icons.Default.PersonOutline,
+    color: Color = Color.White,
     onClick: () -> Unit
 ) {
 
@@ -68,9 +71,9 @@ fun AppNotificationBtn(
         modifier = Modifier.size(46.dp)
     ) {
         Icon(
-            Icons.Default.Notifications,
+            icon,
             contentDescription = "App menu btn",
-            tint = Color.Yellow,
+            tint = color,
             modifier = Modifier.size(27.dp)
         )
     }

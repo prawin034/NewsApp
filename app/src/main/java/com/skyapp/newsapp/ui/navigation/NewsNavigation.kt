@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.skyapp.newsapp.ui.screens.news_Article.view.NewsArticleSearchListScreen
 import com.skyapp.newsapp.ui.screens.news_Detail.view.NewsDetailedScreen
 import com.skyapp.newsapp.ui.screens.news_Home.view.NewsHomeScreen
 
@@ -38,5 +39,10 @@ fun NewsApp() {
             NewsDetailedScreen(navController,id)
         }
 
+        composable(
+            route = NewsScreens.NewsArticleScreen.route
+        ){
+            NewsArticleSearchListScreen(navController)
+        }
     }
 }
