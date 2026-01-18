@@ -14,4 +14,6 @@ sealed class NewsScreens(val route : String) {
         }
     }
 
+    data object NewsPreferenceScreen : NewsScreens("NewsPreferenceScreen")
+
 }

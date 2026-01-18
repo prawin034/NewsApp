@@ -48,6 +48,9 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
     val newUiState by newsArticleViewModel.newsUiState.collectAsStateWithLifecycle()
     val systemUiController = rememberSystemUiController()
 
+
+
+
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color.White,
@@ -70,9 +73,6 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
         topAppBar = {
             AppTopAppBar(
                 modifier = Modifier.shadow(4.dp, ambientColor = Color.Black, spotColor = Color.Black),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(android.graphics.Color.parseColor("#F5F5F5"))
-                ),
                 navigationIcon = {
                     BackIconButton {
                         navController.popBackStack()
@@ -80,21 +80,7 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
                 },
                 title = {},
                 actions = {
-                    Row {
 
-                        AppBtn(
-                            icon = Icons.Default.Favorite,
-                            color = Color.Black
-                        ) {
-                        }
-
-                        AppBtn(
-                            icon = Icons.Default.Bookmark,
-                            color = Color.Black
-                        ) {
-
-                        }
-                    }
                 },
 
             )
@@ -104,8 +90,7 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
         snackBarHost = {},
         content = {
             Column(
-                modifier = Modifier.fillMaxSize().padding(it)
-                    .background(color = Color(android.graphics.Color.parseColor("#F5F5F5"))),
+                modifier = Modifier.fillMaxSize().padding(it),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             )

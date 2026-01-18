@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
@@ -41,10 +42,14 @@ fun BackIconButton(
 ) {
 
     IconButton(
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = Color.White,
+            contentColorFor(Color.White)
+        ),
         onClick = {
             onClick.invoke()
         },
-        modifier = Modifier.size(46.dp)
+        modifier = Modifier.size(46.dp).shadow(1.dp, ambientColor = Color.Black, shape = CircleShape)
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,

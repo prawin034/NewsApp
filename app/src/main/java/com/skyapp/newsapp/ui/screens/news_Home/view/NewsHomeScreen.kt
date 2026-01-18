@@ -159,7 +159,6 @@ fun NewsHomeScreen(
         content = {
            Column(
                modifier = Modifier.fillMaxSize().padding(horizontal = 2.dp)
-                   .background(color = Color(android.graphics.Color.parseColor("#F5F5F5")))
                    .padding(it),
                horizontalAlignment = Alignment.Start,
                verticalArrangement = Arrangement.SpaceBetween

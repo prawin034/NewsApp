@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.skyapp.newsapp.ui.utils.NewsAppConstants
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -23,8 +25,8 @@ fun AppScaffold(
     floatingBtn : @Composable () -> Unit,
     snackBarHost : @Composable () -> Unit,
     floatingBtnPosition : FabPosition = FabPosition.End,
-    containerColor : Color = Color.Transparent,
-    contentColor : Color = Color.Black,
+    containerColor : Color = Color(NewsAppConstants.bgColor),
+    contentColor : Color = contentColorFor(Color(NewsAppConstants.bgColor)),
     content : @Composable (PaddingValues) -> Unit
 ){
 

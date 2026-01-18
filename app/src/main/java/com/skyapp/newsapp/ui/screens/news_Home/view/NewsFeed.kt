@@ -67,9 +67,6 @@ fun NewsFeed(
 
         ,
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
     ) {
         Row (
             modifier = Modifier

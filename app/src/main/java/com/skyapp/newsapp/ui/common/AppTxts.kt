@@ -130,7 +130,7 @@ fun AppTextBody1(
 ) {
 
     Text(
-        text = title.uppercase(),
+        text = title,
         fontSize = fontSize,
         fontWeight = FontWeight.Medium,
         fontFamily = fontFamily,

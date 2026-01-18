@@ -1,5 +1,6 @@
 package com.skyapp.newsapp.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AppBottomBar(
+    onClick : () -> Unit,
     content : @Composable () -> Unit
 ){
 
@@ -29,7 +31,12 @@ fun AppBottomBar(
             .navigationBarsPadding()
             .height(80.dp)
             .padding(horizontal = 25.dp, vertical = 10.dp)
-            .clip(shape = RoundedCornerShape(17.dp)) ,
+            .clip(shape = RoundedCornerShape(17.dp))
+            .clickable(
+                onClickLabel = "Save Preference"
+            ) {
+                onClick.invoke()
+            },
         containerColor = Color.Black,
         contentColor = contentColorFor(Color.Black),
         content = {

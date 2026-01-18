@@ -1,7 +1,5 @@
 package com.skyapp.newsapp.ui.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
@@ -15,6 +13,7 @@ import androidx.navigation.navArgument
 import com.skyapp.newsapp.ui.screens.news_Article.view.NewsArticleSearchListScreen
 import com.skyapp.newsapp.ui.screens.news_Detail.view.NewsDetailedScreen
 import com.skyapp.newsapp.ui.screens.news_Home.view.NewsHomeScreen
+import com.skyapp.newsapp.ui.screens.preference.view.PreferenceScreen
 import com.skyapp.newsapp.ui.utils.newsAppFadeIn
 import com.skyapp.newsapp.ui.utils.newsAppFadeOut
 
@@ -26,7 +25,7 @@ fun NewsApp() {
 
     NavHost(
         navController = navController,
-        startDestination = NewsScreens.NewsHomeScreen.route
+        startDestination = NewsScreens.NewsPreferenceScreen.route
     ) {
         composable(
             route = NewsScreens.NewsHomeScreen.route
@@ -72,6 +71,12 @@ fun NewsApp() {
             }
         ){
             NewsArticleSearchListScreen(navController)
+        }
+
+        composable(
+            route = NewsScreens.NewsPreferenceScreen.route
+        ) {
+            PreferenceScreen(navController)
         }
     }
 }
