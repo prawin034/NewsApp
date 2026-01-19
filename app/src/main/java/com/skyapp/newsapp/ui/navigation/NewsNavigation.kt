@@ -29,7 +29,7 @@ fun NewsApp() {
     val prefsViewmodel : PreferenceViewModel = hiltViewModel()
 
 
-   val destination = if(prefsViewmodel.userPrefsData.collectAsStateWithLifecycle().value.preferencesList.isEmpty())
+   val destination = if(!prefsViewmodel.userPrefsData.collectAsStateWithLifecycle().value.isPreferenceSet)
                                 NewsScreens.NewsPreferenceScreen.route
                      else NewsScreens.NewsHomeScreen.route
 
@@ -55,12 +55,7 @@ fun NewsApp() {
                     towards = AnimatedContentTransitionScope.SlideDirection.Start
                 )
             },
-            exitTransition = {
-                newsAppFadeOut() + slideOutOfContainer(
-                    animationSpec = tween(500, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
-                )
-            }
+
         ) { backStackEntry ->
             val id  = backStackEntry.arguments?.getInt("id") ?:0
             //val offsetSize = backStackEntry.arguments?.getInt("index") ?:0
@@ -75,12 +70,12 @@ fun NewsApp() {
                     towards = AnimatedContentTransitionScope.SlideDirection.Start
                 )
             },
-            exitTransition = {
-                newsAppFadeOut() + slideOutOfContainer(
-                    animationSpec = tween(500, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
-                )
-            }
+//            exitTransition = {
+//                newsAppFadeOut() + slideOutOfContainer(
+//                    animationSpec = tween(500, easing = EaseOut),
+//                    towards = AnimatedContentTransitionScope.SlideDirection.End
+//                )
+//            }
         ){
             NewsArticleSearchListScreen(navController)
         }

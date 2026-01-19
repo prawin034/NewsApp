@@ -51,6 +51,11 @@ class PreferenceViewModel  @Inject  constructor(
         }
     }
 
+    fun setPreference(boolean: Boolean){
+        viewModelScope.launch{
+            userPrefsManager.setPreference(boolean)
+        }
+    }
 
 
 

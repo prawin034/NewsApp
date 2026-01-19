@@ -2,6 +2,8 @@ package com.skyapp.newsapp.ui.screens.bookmark.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,6 +25,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.skyapp.newsapp.ui.common.AppCmnRow
 import com.skyapp.newsapp.ui.common.AppScaffold
+import com.skyapp.newsapp.ui.common.AppSectionTextHeader
 import com.skyapp.newsapp.ui.common.AppTopAppBar
 import com.skyapp.newsapp.ui.common.BackIconButton
 import com.skyapp.newsapp.ui.screens.bookmark.viewmodel.BookMarkViewModel
@@ -66,6 +69,15 @@ fun NewsArticlesBookMarkScreen(navController: NavController,bookMarkViewModel: B
         floatingBtn = {},
         snackBarHost = {},
         content = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                AppSectionTextHeader(text = "Book mark Not implemented yet!", fontSize = 23.sp, textColor = Color.Black)
+
+            }
 
         })
 }

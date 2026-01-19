@@ -1,5 +1,6 @@
 package com.skyapp.newsapp.ui.screens.preference.view
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +22,12 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,6 +56,7 @@ import com.skyapp.newsapp.ui.utils.NewsAppConstants
 fun PreferenceScreen(
     navController: NavController,prefsViewModel: PreferenceViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
 
     val systemUiController = rememberSystemUiController()
 
@@ -68,6 +72,15 @@ fun PreferenceScreen(
     LaunchedEffect(Unit) {
         if(prefsNewsAll.article.isEmpty()){
             prefsViewModel.getNewsPrefs(20,0)
+        }
+    }
+
+
+    val prefsSet by prefsViewModel.userPrefsData.collectAsStateWithLifecycle()
+
+    LaunchedEffect(prefsSet.isPreferenceSet) {
+        if (prefsSet.isPreferenceSet) {
+            Toast.makeText(context,"Preferences Set", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -122,9 +135,15 @@ fun PreferenceScreen(
         bottomAppBar = {
             AppBottomBar(
                 onClick = {
+                    if(myPrefs.preferencesList.isNotEmpty()) prefsViewModel.setPreference(true)
                     navController.navigate(NewsScreens.NewsHomeScreen.route){
                         launchSingleTop = true
                     }
+
+
+
+
+
                 },
                 content = {
                     AppSectionTextHeader(
@@ -216,7 +235,6 @@ fun PreferenceScreen(
             }
         }
     )
-
 
 
 

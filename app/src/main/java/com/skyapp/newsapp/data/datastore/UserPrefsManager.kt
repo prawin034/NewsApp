@@ -37,6 +37,13 @@ class UserPrefsManager @Inject  constructor(
                 .setIsDarkModeEnabled(!prefs.isDarkModeEnabled)
                 .build()
         }
+    }
 
+    suspend fun setPreference(value: Boolean = false) {
+        dataStore.updateData {
+            it.toBuilder()
+                .setIsPreferenceSet(value)
+                .build()
+        }
     }
 }

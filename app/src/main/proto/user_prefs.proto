@@ -7,4 +7,5 @@ option java_multiple_files = true;
 message UserPreferences {
   repeated string preferences = 1;
   bool isDarkModeEnabled = 2;
+  bool isPreferenceSet = 3;
 }

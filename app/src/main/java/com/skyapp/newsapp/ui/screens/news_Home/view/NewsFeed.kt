@@ -1,5 +1,8 @@
 package com.skyapp.newsapp.ui.screens.news_Home.view
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -25,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +44,8 @@ import com.skyapp.newsapp.ui.common.AppTextBody1
 import com.skyapp.newsapp.ui.common.DropDownAction
 import com.skyapp.newsapp.ui.common.MoreBtn
 import com.skyapp.newsapp.ui.screens.news_Article.viewmodel.NewsFeedUiState
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 import java.util.Locale
 
@@ -56,6 +63,8 @@ fun NewsFeed(
 //        parseValidDateString(item.publishedAt)
 //    }
     val showDropdown = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,7 +102,7 @@ fun NewsFeed(
                         fontSize = 10.sp,
                     )
                     AppTextBody1(
-                        item.publishedAt,
+                        item.publishedAt.take(10),
                         color = Color.LightGray,
                         fontSize = 10.sp,
                     )
@@ -120,30 +129,28 @@ fun NewsFeed(
                     }
 
 
-                    MoreBtn(
-                        icon = Icons.Default.MoreHoriz,
-                        color = Color.LightGray
+                    AppBtn(
+                        icon = Icons.Default.Share,
+                        color = Color.Black
                     ) {
-                        showDropdown.value = !showDropdown.value
+                        item.url.takeIf { it.isNotEmpty() }?.let { url ->
+                            try {
+                                val sendIntent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, "${item.title}\n\nRead more: $url")
+                                    type = "text/plain"
+                                }
+
+                                val shareIntent = Intent.createChooser(sendIntent, "Share via")
+                                context.startActivity(shareIntent)
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "Cannot share: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
 
 
 
-                }
-                if(showDropdown.value) {
-                    AppSimpleDropdown(
-                        items = listOf("Share"),
-                        expanded = showDropdown.value,
-                        onActionSelected = { action ->
-                            showDropdown.value = !showDropdown.value
-                            if(action == DropDownAction.SHARE) {
-
-                            }
-                        },
-                        onDismiss = {
-                            showDropdown.value = !showDropdown.value
-                        }
-                    )
                 }
 
             }
