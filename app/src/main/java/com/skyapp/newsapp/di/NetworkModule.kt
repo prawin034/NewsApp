@@ -1,6 +1,7 @@
 package com.skyapp.newsapp.di
 
 import com.skyapp.newsapp.data.remote.interceptors.HeaderInterceptor
+import com.skyapp.newsapp.data.remote.interceptors.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +31,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(HeaderInterceptor())
+            .addInterceptor(RetryInterceptor())
             .readTimeout(10L, TimeUnit.SECONDS)
             .writeTimeout(10L, TimeUnit.SECONDS)
             .connectTimeout(10L, TimeUnit.SECONDS)

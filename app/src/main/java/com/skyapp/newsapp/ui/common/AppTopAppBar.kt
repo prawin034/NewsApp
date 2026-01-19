@@ -28,8 +28,25 @@ fun AppTopAppBar(
     navigationIconContentColor = contentColorFor(Color(NewsAppConstants.topAppBarBgColor))
     ),
     expandedHeight : Dp = TopAppBarDefaults.TopAppBarExpandedHeight,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    isDarkModeEnabled : Boolean = false,
 ) {
+
+  val colors =   if(isDarkModeEnabled)  {
+
+      TopAppBarDefaults.topAppBarColors(
+          containerColor = Color.Black,
+          navigationIconContentColor = contentColorFor(Color.Black)
+      )
+  }
+    else {
+      TopAppBarDefaults.topAppBarColors(
+          containerColor = Color.Transparent,
+          navigationIconContentColor = contentColorFor(Color(NewsAppConstants.topAppBarBgColor))
+      )
+
+  }
+
     TopAppBar(
         title = {
             title.invoke()

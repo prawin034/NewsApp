@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +19,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -44,10 +48,13 @@ import com.skyapp.newsapp.ui.common.AppCmnRow
 import com.skyapp.newsapp.ui.common.AppLabelHeader
 import com.skyapp.newsapp.ui.common.AppScaffold
 import com.skyapp.newsapp.ui.common.AppSectionTextHeader
+import com.skyapp.newsapp.ui.common.AppSimpleDropdown
 import com.skyapp.newsapp.ui.common.AppTopAppBar
+import com.skyapp.newsapp.ui.common.DropDownAction
 import com.skyapp.newsapp.ui.common.ThemeToggleButton
 import com.skyapp.newsapp.ui.navigation.NewsScreens
 import com.skyapp.newsapp.ui.screens.news_Home.viewmodel.NewsHomeScreenViewModel
+import com.skyapp.newsapp.ui.utils.NewsAppConstants
 import com.skyapp.newsapp.ui.utils.mapIconName
 
 
@@ -71,28 +78,40 @@ fun NewsHomeScreen(
         }
     }
 
-    val systemUiController = rememberSystemUiController()
-    val useDarkIcons = true
 
-    SideEffect {
-        systemUiController.setSystemBarsColor(
-            color = Color.White,
-            darkIcons = useDarkIcons
-        )
-
-    }
 
 
     val lazyListState  = rememberLazyListState()
 
 
     val bottomList = listOf("Home","Search","BookMark","Profile")
-
     val isDark  = remember { mutableStateOf(false) }
 
-    AppScaffold(
+    val myPrefsData by newsHomeScreenViewModel.userPrefsData.collectAsStateWithLifecycle()
+
+
+    val systemUiController = rememberSystemUiController()
+    val isDarkMode = myPrefsData.isDarkModeEnabled
+    val isPullToRefreshTriggered by newsHomeScreenViewModel.isPullToRefreshTriggered.collectAsStateWithLifecycle()
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = if (isDarkMode) Color.Black else Color(NewsAppConstants.bgColor),
+            darkIcons = !isDarkMode
+        )
+    }
+
+    val showDropdown  = remember { mutableStateOf(false) }
+        AppScaffold(
+        isDarkModeEnabled = myPrefsData.isDarkModeEnabled,
         topAppBar = {
             AppTopAppBar(
+                isDarkModeEnabled = myPrefsData.isDarkModeEnabled,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 navigationIcon = {
                     AppCmnRow(
                         horizontalArrangement = Arrangement.Start,
@@ -106,7 +125,7 @@ fun NewsHomeScreen(
                             text = "News",
                             letterSpacing = 3.sp,
                             fontSize = 19.5.sp,
-                            textColor = contentColorFor(Color.Black),
+                            textColor = if(myPrefsData.isDarkModeEnabled) Color.White else Color(0xFF000000) ,
                             fontFamily = FontFamily.Cursive,
                             modifier = Modifier.padding(start = 1.4.dp)
 
@@ -117,20 +136,43 @@ fun NewsHomeScreen(
                 actions = {
                     ThemeToggleButton(
                         modifier = Modifier,
-                        isDarkMode = isDark.value,
+                        isDarkMode = myPrefsData.isDarkModeEnabled,
                         onToggle = {
-                            isDark.value = !isDark.value
+                          newsHomeScreenViewModel.toggleDarkMode()
                         }
                     )
 
-                    AppBtn(
-                        icon = Icons.Default.MoreVert,
-                        color = Color.Black
-                    ) {
+                        AppBtn(
+                            icon = Icons.Default.MoreVert,
+                            color = if (myPrefsData.isDarkModeEnabled) Color.White else Color.Black
+                        ) {
+                            showDropdown.value = !showDropdown.value
+                        }
 
+                    Box(modifier = Modifier.padding(top = 50.dp)) {
+                        AppSimpleDropdown(
+                            items = listOf("BookMark"),
+                            modifier = Modifier,
+                            expanded = showDropdown.value,
+                            onDismiss = { showDropdown.value = false },
+                            onActionSelected = { action ->
+                                if(action == DropDownAction.BOOKMARK ){
+                                    showDropdown.value = false
+                                    navController.navigate(NewsScreens.BookmarkNewsScreen.route)
+                                }
+                            }
+                        )
                     }
+
+
+
+
                 }
             )
+
+
+
+
         },
         bottomAppBar = {
             if(getNewsArticlesPaginated.isLoading) {
@@ -139,15 +181,12 @@ fun NewsHomeScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Refreshing!", color = Color.Black, fontSize = 16.sp, modifier = Modifier.padding(2.dp))
+                    Text("Refreshing!", color = if(myPrefsData.isDarkModeEnabled) Color.White else Color(0xFF000000), fontSize = 16.sp, modifier = Modifier.padding(2.dp),)
                     CircularProgressIndicator(
                         color = Color.Green,
                         strokeWidth = 5.dp
                     )
                 }
-            }
-            if(getNewsArticlesPaginated.error !=null){
-                Toast.makeText(context,getNewsArticlesPaginated.error, Toast.LENGTH_SHORT).show()
             }
         },
         floatingBtn = {
@@ -157,53 +196,76 @@ fun NewsHomeScreen(
 
         },
         content = {
-           Column(
-               modifier = Modifier.fillMaxSize().padding(horizontal = 2.dp)
-                   .padding(it),
-               horizontalAlignment = Alignment.Start,
-               verticalArrangement = Arrangement.SpaceBetween
-           ) {
-               LazyColumn(
-                   state = lazyListState
-               ) {
-                   item {
-                       NewsHomeTopPickupForYouSection(getAllArticles,navController)
-                   }
+            @OptIn(ExperimentalMaterial3Api::class)
 
-                   item {
-                       ExploreNewsSection(getAllArticles) {
-                           navController.navigate(NewsScreens.NewsArticleScreen.route)
-                       }
-                   }
+            PullToRefreshBox(
+                isRefreshing = isPullToRefreshTriggered,
+                onRefresh = {
+                    newsHomeScreenViewModel.resetPagination()
+                    newsHomeScreenViewModel.pullToRefresh(true)
+                    newsHomeScreenViewModel.getAllNewsArticles()
+                    newsHomeScreenViewModel.pullToRefresh(false)
+                    newsHomeScreenViewModel.getNewsArticlesPaginated()
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 2.dp)
+                        .padding(it),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    LazyColumn(
+                        state = lazyListState
+                    ) {
+                        item {
+                            NewsHomeTopPickupForYouSection(
+                                isDarkModeEnabled = isDarkMode,
+                                getAllArticles,
+                                navController)
+                        }
+
+                        item {
+                            ExploreNewsSection(getAllArticles,
+                                isDarkModeEnabled = isDarkMode) {
+                                navController.navigate(NewsScreens.NewsArticleScreen.route)
+                            }
+                        }
 
 
-                   itemsIndexed(
-                       getNewsArticlesPaginated.article,
-                       key ={_, item -> item.id}
-                   ) {index, item ->
+                        itemsIndexed(
+                            getNewsArticlesPaginated.article,
+                            key ={_, item -> item.id}
+                        ) {index, item ->
 
-                       NewsFeed(item){
-                           navController.navigate(NewsScreens.NewsDetailScreen.passArgs(it))
-                       }
+                            NewsFeed(item){
+                                navController.navigate(NewsScreens.NewsDetailScreen.passArgs(
+                                    item.id,
+                                ))
+                            }
 
-                   }
+                        }
 
-               }
+                    }
 
 
-               LaunchedEffect(lazyListState) {
-                  snapshotFlow { lazyListState.layoutInfo }
-                      .collect {layoutInfo ->
-                          val totalItemsCount = layoutInfo.totalItemsCount
+                    LaunchedEffect(lazyListState) {
+                        snapshotFlow { lazyListState.layoutInfo }
+                            .collect {layoutInfo ->
+                                val totalItemsCount = layoutInfo.totalItemsCount
 
-                          val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?:0
-                          if (lastVisibleItem >= totalItemsCount - 1) {
-                              newsHomeScreenViewModel.getNewsArticlesPaginated()
-                          }
-                      }
-               }
+                                val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?:0
+                                if (lastVisibleItem >= totalItemsCount - 1) {
+                                    newsHomeScreenViewModel.getNewsArticlesPaginated()
+                                }
 
-           }
+                            }
+                    }
+
+                }
+            }
+
 
         }
 

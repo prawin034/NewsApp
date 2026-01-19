@@ -44,7 +44,9 @@ import java.util.Locale
 
 @Composable
 fun ExploreNewsSection(
+
     getAllArticles: NewsFeedUiState,
+    isDarkModeEnabled: Boolean= false,
     exploreMore :() -> Unit = {}
 ) {
 
@@ -65,7 +67,7 @@ fun ExploreNewsSection(
         AppCmnRow(
 
         ) {
-            AppSectionTextHeader(text = "Explore Now")
+            AppSectionTextHeader(text = "Explore Now", textColor = if(isDarkModeEnabled) Color.White else Color(0xFF000000))
             AppTxtShowMore("See more".capitalize(Locale.ROOT)) {
                 exploreMore.invoke()
             }

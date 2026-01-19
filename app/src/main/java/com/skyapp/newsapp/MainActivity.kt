@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.skyapp.newsapp.data.datastore.UserPreferences
+import com.skyapp.newsapp.data.datastore.UserPrefsManager
 import com.skyapp.newsapp.ui.navigation.NewsApp
 import com.skyapp.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +23,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NewsAppTheme {
+
+
+            NewsAppTheme(
+            ) {
                 NewsApp()
             }
         }

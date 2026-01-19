@@ -19,6 +19,7 @@ import com.skyapp.newsapp.ui.utils.NewsAppConstants
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppScaffold(
+    isDarkModeEnabled : Boolean = false,
     modifier: Modifier = Modifier,
     topAppBar : @Composable () -> Unit,
     bottomAppBar : @Composable () -> Unit,
@@ -29,6 +30,10 @@ fun AppScaffold(
     contentColor : Color = contentColorFor(Color(NewsAppConstants.bgColor)),
     content : @Composable (PaddingValues) -> Unit
 ){
+
+
+   val containerbg =  if(isDarkModeEnabled) Color.Black else containerColor
+
 
     Scaffold(
         modifier = modifier,
@@ -45,7 +50,7 @@ fun AppScaffold(
             snackBarHost.invoke()
         },
         floatingActionButtonPosition = floatingBtnPosition,
-        containerColor = containerColor,
+        containerColor = containerbg,
         contentColor = contentColor,
         content = {
             Surface(

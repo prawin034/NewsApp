@@ -23,7 +23,8 @@ import com.airbnb.lottie.compose.LottieConstants
 @Composable
 fun NoDataFound(
     text: String = "Can't find exact matches for your search. \n" +
-            " Try searching for other names."
+            " Try searching for other names.",
+    isDarMode: Boolean = false
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -37,7 +38,7 @@ fun NoDataFound(
             text = text,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = if(isDarMode) Color.White else  Color.Black,
             textAlign = TextAlign.Center
         )
 

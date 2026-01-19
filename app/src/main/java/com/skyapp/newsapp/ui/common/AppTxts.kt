@@ -1,6 +1,9 @@
 package com.skyapp.newsapp.ui.common
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.skyapp.newsapp.data.datastore.UserPreferences
 import kotlin.math.max
 
 
@@ -39,7 +43,7 @@ fun AppSectionTextHeader(
     text: String,
     textColor: Color = Color.Black,
     fontSize: TextUnit = 19.5.sp,
-    fontWeight: FontWeight = FontWeight.SemiBold,
+    fontWeight: FontWeight = FontWeight.Black,
     fontFamily: FontFamily = FontFamily.Cursive,
     textAlign: TextAlign = TextAlign.Start,
     letterSpacing: TextUnit = 3.sp,
@@ -47,6 +51,8 @@ fun AppSectionTextHeader(
 
     ) {
 
+
+    //val prefsManager = UserPreferences.getDefaultInstance()
 
     Text(
         text = text,

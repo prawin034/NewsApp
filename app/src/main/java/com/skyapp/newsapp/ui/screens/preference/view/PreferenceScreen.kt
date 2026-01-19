@@ -1,6 +1,5 @@
 package com.skyapp.newsapp.ui.screens.preference.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,9 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -24,6 +21,8 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -34,25 +33,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.skyapp.newsapp.ui.common.AppBottomBar
 import com.skyapp.newsapp.ui.common.AppBtn
+import com.skyapp.newsapp.ui.common.AppCard
 import com.skyapp.newsapp.ui.common.AppCmnRow
 import com.skyapp.newsapp.ui.common.AppLabelHeader
-import com.skyapp.newsapp.ui.common.AppScaffold
-import com.skyapp.newsapp.ui.common.AppSearchBar
-import com.skyapp.newsapp.ui.common.AppSectionTextHeader
-import com.skyapp.newsapp.ui.common.AppTopAppBar
-import com.skyapp.newsapp.ui.common.ThemeToggleButton
-import com.skyapp.newsapp.ui.screens.preference.viewmodel.PreferenceViewModel
-import com.skyapp.newsapp.ui.utils.NewsAppConstants
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import com.skyapp.newsapp.ui.common.AppBottomBar
-import com.skyapp.newsapp.ui.common.AppCard
 import com.skyapp.newsapp.ui.common.AppLoader
+import com.skyapp.newsapp.ui.common.AppScaffold
+import com.skyapp.newsapp.ui.common.AppSectionTextHeader
 import com.skyapp.newsapp.ui.common.AppTextBody2
+import com.skyapp.newsapp.ui.common.AppTopAppBar
 import com.skyapp.newsapp.ui.common.NoDataFound
 import com.skyapp.newsapp.ui.navigation.NewsScreens
-import androidx.compose.runtime.getValue
+import com.skyapp.newsapp.ui.screens.preference.viewmodel.PreferenceViewModel
+import com.skyapp.newsapp.ui.utils.NewsAppConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,8 +71,10 @@ fun PreferenceScreen(
         }
     }
 
-    val myPrefs by prefsViewModel.myPrefs.collectAsStateWithLifecycle()
+   // val myPrefs by prefsViewModel.myPrefs.collectAsStateWithLifecycle()
     val uniquePrefs  =  prefsNewsAll.article.distinctBy { it.newsSite }
+
+    val myPrefs by prefsViewModel.userPrefsData.collectAsStateWithLifecycle()
     AppScaffold(
         topAppBar = {
             AppTopAppBar(
@@ -174,14 +170,12 @@ fun PreferenceScreen(
                                 AppCard(
                                     modifier = Modifier.padding(10.dp)
                                         .clickable {
-                                            if(myPrefs.contains(item.newsSite))
-                                                prefsViewModel.removeMyPrefs(item.newsSite)
-                                            else prefsViewModel.addMyPrefs(item.newsSite)
+                                            prefsViewModel.togglePrefsDataStore(item.newsSite)
                                         },
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (myPrefs.contains(item.newsSite)) Color(
+                                        containerColor = if (myPrefs.preferencesList .contains(item.newsSite)) Color(
                                             NewsAppConstants.primary) else Color.White,
-                                        contentColor = if (myPrefs.contains(item.newsSite)) Color.Black else Color.White
+                                        contentColor = if (myPrefs.preferencesList.contains(item.newsSite)) Color.Black else Color.White
                                     ),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
@@ -189,7 +183,7 @@ fun PreferenceScreen(
                                         modifier = Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.Start,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        AppTextBody2(item.newsSite, fontSize = 13.sp, color =  if (myPrefs.contains(item.newsSite)) Color.White else Color.Black)
+                                        AppTextBody2(item.newsSite, fontSize = 13.sp, color =  if (myPrefs.preferencesList.contains(item.newsSite)) Color.White else Color.Black)
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(5.dp))

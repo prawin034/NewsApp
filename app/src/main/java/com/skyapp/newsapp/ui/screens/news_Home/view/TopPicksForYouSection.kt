@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.skyapp.newsapp.data.datastore.UserPreferences
 import com.skyapp.newsapp.domain.model.Article
 import com.skyapp.newsapp.ui.common.AppAsyncImg
 import com.skyapp.newsapp.ui.common.AppBtn
@@ -51,11 +52,13 @@ import java.util.Locale
 
 @Composable
 fun NewsHomeTopPickupForYouSection(
+    isDarkModeEnabled: Boolean= false,
     getAllArticles: NewsFeedUiState,
     navController: NavController
 )
 {
     val context = LocalContext.current
+    //if(myPrefsData.isDarkModeEnabled) Color.White else Color(0xFF000000)
 
     Column(
         modifier = Modifier.padding(paddingValues = PaddingValues(
@@ -71,10 +74,10 @@ fun NewsHomeTopPickupForYouSection(
         AppCmnRow(
 
         ) {
-            AppSectionTextHeader(text = "Top Picks For You")
+            AppSectionTextHeader(text = "Top Picks For You", textColor = if(isDarkModeEnabled) Color.White else Color(0xFF000000))
             AppTxtShowMore("Show More")
             {
-
+                navController.navigate(NewsScreens.NewsArticleScreen.route)
             }
         }
 

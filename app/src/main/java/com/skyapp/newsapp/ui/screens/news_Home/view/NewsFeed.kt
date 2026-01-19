@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,9 @@ import com.skyapp.newsapp.ui.common.AppBtn
 import com.skyapp.newsapp.ui.common.AppCard
 import com.skyapp.newsapp.ui.common.AppCardHeader
 import com.skyapp.newsapp.ui.common.AppCmnRow
+import com.skyapp.newsapp.ui.common.AppSimpleDropdown
 import com.skyapp.newsapp.ui.common.AppTextBody1
+import com.skyapp.newsapp.ui.common.DropDownAction
 import com.skyapp.newsapp.ui.common.MoreBtn
 import com.skyapp.newsapp.ui.screens.news_Article.viewmodel.NewsFeedUiState
 
@@ -51,6 +55,7 @@ fun NewsFeed(
 //    val formattedDate = remember(item.publishedAt) {
 //        parseValidDateString(item.publishedAt)
 //    }
+    val showDropdown = remember { mutableStateOf(false) }
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,8 +123,27 @@ fun NewsFeed(
                     MoreBtn(
                         icon = Icons.Default.MoreHoriz,
                         color = Color.LightGray
-                    ) { }
+                    ) {
+                        showDropdown.value = !showDropdown.value
+                    }
 
+
+
+                }
+                if(showDropdown.value) {
+                    AppSimpleDropdown(
+                        items = listOf("Share"),
+                        expanded = showDropdown.value,
+                        onActionSelected = { action ->
+                            showDropdown.value = !showDropdown.value
+                            if(action == DropDownAction.SHARE) {
+
+                            }
+                        },
+                        onDismiss = {
+                            showDropdown.value = !showDropdown.value
+                        }
+                    )
                 }
 
             }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.protobuf") version "0.9.5"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 }
@@ -38,6 +39,20 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite") // required for Android
+                }
+            }
+        }
     }
 }
 
@@ -107,4 +122,13 @@ dependencies {
 
    // Lottie Animation
     implementation("com.airbnb.android:lottie-compose:6.0.1")
+
+
+    // Proto DataStore
+    implementation("androidx.datastore:datastore-core:1.1.0")
+
+    // Protocol Buffers (Lite)
+    implementation("com.google.protobuf:protobuf-javalite:3.24.1")
+
+    kapt("androidx.hilt:hilt-compiler:1.3.0")
 }

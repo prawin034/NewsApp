@@ -15,7 +15,8 @@ fun NewsArticleItemDto.toDomain() = Article(
     summary = summary.orEmpty(),
     publishedAt = publishedAt.orEmpty(),
     newsSite = newsSite.orEmpty(),
-    featured = featured == true
+    featured = featured == true,
+    url = url.orEmpty()
 )
 
 
