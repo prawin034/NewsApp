@@ -141,17 +141,44 @@ fun NewsDetailedScreen(
         floatingBtn = {},
         snackBarHost = {},
         content = {
-             HorizontalPager(
-                 state = pager,
-                 modifier = Modifier.fillMaxSize().padding(it)
-             ) { pager ->
 
-                 NewsDetailContent(
-                     articleDetails = getAllNews.article[pager],
-                     isDarkModeEnabled = isDarkMode
-                 )
+            when {
+                getAllNews.isLoading -> {
+                    androidx.compose.material3.CircularProgressIndicator()
+                }
 
-             }
+                getAllNews.error != null -> {
+                    Text(
+                        text = getAllNews.error ?: "Something went wrong",
+                        color = Color.Red
+                    )
+                }
+
+                getAllNews.article.isNotEmpty() -> {
+                    HorizontalPager(
+                        state = pager,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        NewsDetailContent(
+                            articleDetails = getAllNews.article[page],
+                            isDarkModeEnabled = isDarkMode
+                        )
+                    }
+                }
+            }
+//             HorizontalPager(
+//                 state = pager,
+//                 modifier = Modifier.fillMaxSize().padding(it)
+//             ) { pager ->
+//
+//
+//
+//                 NewsDetailContent(
+//                     articleDetails = getAllNews.article[pager],
+//                     isDarkModeEnabled = isDarkMode
+//                 )
+//
+//             }
 
         }
     )

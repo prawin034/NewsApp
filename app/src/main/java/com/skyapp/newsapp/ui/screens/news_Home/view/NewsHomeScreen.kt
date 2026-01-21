@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -177,7 +178,7 @@ fun NewsHomeScreen(
         bottomAppBar = {
             if(getNewsArticlesPaginated.isLoading) {
                 AppCmnRow(
-                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    modifier = Modifier.fillMaxWidth().padding(20.dp).padding(bottom = 40.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -248,7 +249,6 @@ fun NewsHomeScreen(
                         }
 
                     }
-
 
                     LaunchedEffect(lazyListState) {
                         snapshotFlow { lazyListState.layoutInfo }

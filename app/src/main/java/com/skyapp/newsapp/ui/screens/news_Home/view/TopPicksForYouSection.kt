@@ -227,11 +227,14 @@ fun LoadTopPickupForYouSection(
 
 
 
-                            AppTextBody1(
-                                item.publishedAt,
-                                color = Color.LightGray,
-                                fontSize = 10.sp,
-                            )
+                            if(item.publishedAt.isNotEmpty()) {
+                                AppTextBody1(
+                                    item.publishedAt.take(10),
+                                    color = Color.LightGray,
+                                    fontSize = 10.sp,
+                                )
+                            }
+
 
                         }
 

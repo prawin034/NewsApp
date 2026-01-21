@@ -111,7 +111,7 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
         bottomAppBar = {
             if(getNewsArticlesPaginated.isLoading) {
                 AppCmnRow(
-                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    modifier = Modifier.fillMaxWidth().padding(20.dp).padding(bottom = 40.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -217,7 +217,8 @@ fun NewsArticleSearchListScreen(navController: NavController,newsArticleViewMode
                         }
 
 
-                        itemsIndexed(getNewsArticlesPaginated.article, key =  {_,item -> item.id }) {index, item ->
+                        itemsIndexed(getNewsArticlesPaginated.article, key =  {_,item -> "${item.id}_${item.publishedAt}"
+                        }) {index, item ->
                             NewsFeed(item) {
                                 navController.navigate(
                                     NewsScreens.NewsDetailScreen.passArgs(

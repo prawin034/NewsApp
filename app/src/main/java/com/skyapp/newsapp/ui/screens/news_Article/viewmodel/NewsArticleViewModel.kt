@@ -148,10 +148,14 @@ class NewsArticleViewModel  @Inject constructor(
                 )
 
 
-                _getNewsArticlesPaginated.update {
-                    it.copy(
+                _getNewsArticlesPaginated.update { state ->
+                    val existingIds = state.article.map { it.id }.toSet()
+
+                    val newArticles = result.filter { it.id !in existingIds }
+
+                    state.copy(
                         isLoading = false,
-                        article = it.article.plus(result)
+                        article = state.article + newArticles
                     )
                 }
                 if(result.size <limit) endReached = true
